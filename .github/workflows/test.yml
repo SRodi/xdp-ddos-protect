@@ -1,0 +1,25 @@
+name: Test XDP program compile/load/attach on Ubuntu
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up BPF toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install clang llvm libbpf-dev make -y
+
+    - name: Test compile XDP program
+      run: make compile
+
+    - name: Test attach XDP program
+      run: make attach
+
+    - name: Test detach XDP program
+      run: make detach
