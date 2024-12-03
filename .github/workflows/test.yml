@@ -15,6 +15,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install clang llvm libbpf-dev make -y
 
+    - name: Export Linux headers for libbpf
+      env:
+        C_INCLUDE_PATH: /usr/include/x86_64-linux-gnu
+      run: find /usr/include -name 'types.h'
+
     - name: Test compile XDP program
       run: make compile
 
