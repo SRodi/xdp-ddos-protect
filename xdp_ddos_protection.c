@@ -21,9 +21,11 @@ struct {
 
 SEC("xdp") int ddos_protection(struct xdp_md *ctx) {
     void *data_end = (void *)(long)ctx->data_end;
-    void *data = (void *)(long)ctx->data; // Parse Ethernet header
+    void *data = (void *)(long)ctx->data;
+
+    // Parse Ethernet header
     struct ethhdr *eth = data;
-    
+    // Check if packet is large enough to contain Ethernet header
     if ((void *)(eth + 1) > data_end)
         return XDP_PASS;
     
@@ -33,10 +35,12 @@ SEC("xdp") int ddos_protection(struct xdp_md *ctx) {
     
     // Parse IP header
     struct iphdr *iph = (void *)(eth + 1);
+    // Check if ethernet frame is large enough to contain IP header
     if ((void *)(iph + 1) > data_end)
         return XDP_PASS;
         
-    __u32 src_ip = iph->saddr; // Source IP address
+    // Convert source IP from network to host byte order
+    __u32 src_ip = __builtin_bswap32(iph->saddr);
     
     // Lookup rate limit entry for this IP
     struct rate_limit_entry *entry = bpf_map_lookup_elem(&rate_limit_map, &src_ip);
@@ -63,7 +67,9 @@ SEC("xdp") int ddos_protection(struct xdp_md *ctx) {
         __builtin_memset(&new_entry, 0, sizeof(new_entry));
         new_entry.last_update = current_time;
         new_entry.packet_count = 1;
-        bpf_map_update_elem(&rate_limit_map, &src_ip, &new_entry, BPF_ANY);
+        if (bpf_map_update_elem(&rate_limit_map, &src_ip, &new_entry, BPF_ANY) != 0) {
+            return XDP_ABORTED; // Handle error if update fails
+        }
     }
     return XDP_PASS; // Allow packet if under threshold   
 }
