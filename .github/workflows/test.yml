@@ -3,7 +3,7 @@ name: Test XDP program compile/load/attach on Ubuntu
 on: [push, pull_request]
 
 jobs:
-  build:
+  xdp_test:
     runs-on: ubuntu-latest
 
     env:

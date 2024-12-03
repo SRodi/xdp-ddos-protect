@@ -1,3 +1,5 @@
+[![Test XDP program compile/load/attach on Ubuntu](https://github.com/SRodi/xdp-ddos-protect/actions/workflows/test.yml/badge.svg)](https://github.com/SRodi/xdp-ddos-protect/actions/workflows/test.yml)
+
 # Protect from DDoS attacks with XDP 
 
 The [xdp_ddos_protection.c](./xdp_ddos_protection.c) file contains an eBPF program designed for DDoS protection using XDP (eXpress Data Path).
