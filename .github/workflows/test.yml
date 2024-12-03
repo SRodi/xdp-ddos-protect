@@ -13,7 +13,7 @@ jobs:
     - name: Set up BPF toolchain
       run: |
         sudo apt-get update
-        sudo apt-get install clang llvm libbpf-dev make -y
+        sudo apt-get install clang llvm libbpf-dev make linux-headers-$(uname -r) -y
 
     - name: Export Linux headers for libbpf
       env:
