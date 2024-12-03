@@ -8,6 +8,7 @@ jobs:
 
     env:
       C_INCLUDE_PATH: /usr/include/x86_64-linux-gnu
+      IFACE: lo
 
     steps:
     - name: Checkout repository
@@ -24,6 +25,12 @@ jobs:
 
     - name: Test attach XDP program
       run: make attach
+
+    - name: Check if XDP program is attached
+      run: make iface-inspect
+
+    - name: Dump BPF map
+      run: make dump
 
     - name: Test detach XDP program
       run: make detach

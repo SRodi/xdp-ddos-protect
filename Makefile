@@ -18,5 +18,8 @@ attach:
 detach:
 	sudo ip link set dev $(IFACE) xdp off
 
+iface-inspect:
+	sudo ip link show $(IFACE)
+
 dump:
 	sudo bpftool map dump name $(MAP) &> /dev/null
